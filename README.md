@@ -96,11 +96,5 @@ pft/
 - **SQLite Database:** Selected SQLite because the application is designed for individual use and does not require complex concurrent write operations.
 - **Backend Data Validation:** Learned the importance of validating user input on the server side (e.g., verifying dates and transaction types) to prevent database corruption, even when HTML forms have built-in validations.
 
-## Author
-
-**Udarsh Goyal**
-- GitHub: [@udarshcodes](https://github.com/udarshcodes)
-- Portfolio: [udarshcodes.github.io](https://udarshcodes.github.io/personal_portfolio/)
-- LinkedIn: [Udarsh Goyal](https://www.linkedin.com/in/udarsh-goyal-256095383/)
 
 *CS50x Final Project — Harvard University*
