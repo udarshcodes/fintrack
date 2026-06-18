@@ -1,111 +1,106 @@
-# FinTrack — Personal Finance Tracker
+<div align="center">
+  <img src="static/logo.jpg" alt="FinTrack Logo" width="150"/>
+  <h1>FinTrack</h1>
+  <p><em>A full stack expense and budget tracker built to learn the fundamentals.</em></p>
+</div>
 
-**Live Demo:** [fintrack-iudq.onrender.com](https://fintrack-iudq.onrender.com)
+**Live Demo:** [fintrack-iudq.onrender.com](https://fintrack-iudq.onrender.com) (Hosted on Render's free tier, so it may take a few seconds to spin up on initial load.)
 
 ## About
 
-FinTrack was originally built inside Harvard's CS50x virtual codespace as my final project submission. I'm now making it public with some UI improvements — cleaner dark theme, better typography, and a more polished layout. The core logic and functionality are unchanged from the original submission.
-
-It's not trying to compete with Walnut or ET Money. It's a technical exercise in building something end to end: from schema design and auth to deployment.
+FinTrack is a web application that helps users track their monthly incomes and expenses. It was originally built as my final project for Harvard's CS50x course to practice building a full-stack application from scratch. The project is a technical exercise in implementing core features like schema design, user authentication, and data validation. It is not intended to be a commercial product, but rather a functional demonstration of web development fundamentals.
 
 ## Features
 
-**Authentication** — Register, login, logout with hashed passwords (Werkzeug)
-
-**Transactions** — Add income or expense entries with category, description, and date
-
-**Budget Tracking** — Set monthly budgets per category; see remaining vs spent in real time
-
-**Transaction History** — View and delete all past transactions
-
-**Financial Reports** — Monthly income vs expense summary + top expense categories
-
-**Multi-currency** — Supports USD, INR, EUR, GBP, JPY, and more
-
-**Settings** — Change password and currency preference
+- **User Accounts:** Register, log in, and log out securely. Real-time availability checks for usernames.
+- **Transaction Management:** Add income and expense transactions with specific dates, categories, and descriptions.
+- **Transaction History:** View all past transactions and delete them if a mistake was made.
+- **Budgeting:** Set monthly budget limits for different categories and track spending against those limits.
+- **Dashboard:** View current balance and recent transactions at a glance.
+- **Reports:** View monthly income versus expense summaries and top spending categories.
+- **Preferences:** Update account password and change the preferred display currency.
+- **Premium Interface:** Features a responsive, Apple-style glassmorphic UI with dynamic color transitions and smooth scrolling.
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | Backend | Python, Flask |
-| Database | SQLite (via cs50 library) |
-| Auth | Werkzeug password hashing, Flask-Session |
-| Frontend | Jinja2, Bootstrap 5, custom CSS |
-| Deployment | Render (gunicorn) |
+| Database | SQLite |
+| Auth | Werkzeug, Flask-Session |
+| Frontend | HTML, CSS, Jinja2, Bootstrap 5 |
+| Deployment| Gunicorn |
+
+## Architecture
+
+FinTrack uses a monolithic Model-View-Controller (MVC) architecture. All web requests are routed through `app.py`, which acts as the controller. It manages user sessions, processes form data, and executes raw SQL queries against the local SQLite database. Once the data is retrieved or updated, the application renders HTML templates using Jinja2 and sends the response back to the client. This tightly coupled approach was chosen over a separate REST API and frontend (like React) to reduce configuration overhead and focus strictly on learning core server-side routing, raw SQL data modeling, and HTML templating.
 
 ## Running Locally
 
-**1. Clone the repo**
+1. **Clone the repository**
 ```bash
 git clone https://github.com/udarshcodes/pft.git
 cd pft
 ```
 
-**2. Install dependencies**
+2. **Install dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-**3. Create the database**
+3. **Initialize the database**
 ```bash
 python create_db.py
 ```
 
-**4. Run the app**
+4. **Start the development server**
 ```bash
 python app.py
 ```
-
-Visit `http://127.0.0.1:5000`
+Visit `http://127.0.0.1:5000` in your web browser.
 
 ## Project Structure
 
-```
+```text
 pft/
-├── app.py              # All Flask routes and business logic
-├── helpers.py          # Auth decorator, currency filter, date parser
-├── create_db.py        # Database initialisation script
-├── schema.sql          # SQLite schema (users, transactions, budgets)
-├── requirements.txt
-├── Procfile            # For Render deployment
-├── static/
-│   ├── styles.css      # Custom dark theme
-│   └── scripts.js
-└── templates/
-    ├── layout.html     # Base template
-    ├── index.html      # Dashboard
-    ├── add.html        # Add transaction
-    ├── history.html    # Transaction history
-    ├── budget.html     # Budget management
-    ├── reports.html    # Financial reports
-    ├── settings.html   # User settings
+├── app.py              # Main Flask application and route definitions
+├── create_db.py        # Database initialization script
+├── finance.db          # SQLite database (created after running create_db.py)
+├── helpers.py          # Utility functions for auth, currency formatting, and date parsing
+├── Procfile            # Gunicorn command for deployment
+├── requirements.txt    # Python package dependencies
+├── schema.sql          # Database table definitions
+├── static/             
+│   ├── hero_graphic.png # Landing page visualization
+│   ├── logo.jpg        # App logo
+│   └── styles.css      # Custom CSS styles
+└── templates/          # Jinja2 HTML templates
+    ├── add.html
+    ├── apology.html
+    ├── budget.html
+    ├── contact.html
+    ├── history.html
+    ├── index.html
+    ├── landing.html
+    ├── layout.html
     ├── login.html
     ├── register.html
-    ├── contact.html
-    └── apology.html
+    ├── reports.html
+    └── settings.html
 ```
 
-## A Note on the UI
+## What I Learned & Key Decisions
 
-The original submission used default Bootstrap styling. The public version uses a custom dark theme inspired by fintech dashboards — DM Sans + Syne fonts, glassmorphism cards, and a consistent design system. No functionality was changed.
-
-## What I Learned
-
-Designing a relational database schema from scratch
-
-Session-based authentication and password hashing
-
-Flask routing, Jinja2 templating, and custom filters
-
-Writing SQL aggregate queries for reports and budget tracking
-
-Deploying a Python web app to production with gunicorn and Render
+- **Session-Based Authentication:** Chose server-side sessions over JWTs because the application relies entirely on server-rendered HTML templates rather than a separated API and frontend.
+- **Raw SQL over ORM:** Used raw SQL queries via the `cs50` library instead of SQLAlchemy to solidify my understanding of relational database concepts and schema design.
+- **SQLite Database:** Selected SQLite because the application is designed for individual use and does not require complex concurrent write operations.
+- **Backend Data Validation:** Learned the importance of validating user input on the server side (e.g., verifying dates and transaction types) to prevent database corruption, even when HTML forms have built-in validations.
 
 ## Author
 
-**Udarsh Goyal** 
-[GitHub](https://github.com/udarshcodes) · [Portfolio](https://udarshcodes.github.io/personal_portfolio/) · [LinkedIn](https://www.linkedin.com/in/udarshgoyal-256095383)
+**Udarsh Goyal**
+- GitHub: [@udarshcodes](https://github.com/udarshcodes)
+- Portfolio: [udarshcodes.github.io](https://udarshcodes.github.io/personal_portfolio/)
+- LinkedIn: [Udarsh Goyal](https://www.linkedin.com/in/udarsh-goyal-256095383/)
 
-
-*CS50x Final Project — Harvard University, 2025*
+*CS50x Final Project — Harvard University*

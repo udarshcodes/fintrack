@@ -1,0 +1,119 @@
+{% extends "layout.html" %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block main %}
+<!-- Hero Section -->
+<section class="hero-section d-flex align-items-center">
+    <div class="container">
+        <div class="row align-items-center">
+            <!-- Text Content -->
+            <div class="col-lg-6 mb-5 mb-lg-0 pe-lg-5 fade-in-up">
+                <div class="d-inline-flex align-items-center mb-3" style="background: rgba(144,10,10,0.2); padding: 5px 15px; border-radius: 20px; border: 1px solid rgba(144,10,10,0.4);">
+                    <span style="width: 8px; height: 8px; background: var(--accent); border-radius: 50%; margin-right: 8px; display: inline-block;"></span>
+                    <span style="font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; color: var(--accent);">YOUR FINANCIAL COMPASS</span>
+                </div>
+                <h1 class="hero-title">Track. Budget. <br>Achieve.</h1>
+                <p class="hero-subtitle">A sleek, full-stack expense and budget tracker built to simplify your financial life. No clutter, no distractions—just your numbers, beautifully visualized.</p>
+                <div class="d-flex gap-3">
+                    <a href="/register" class="btn fw-bold px-4 py-2" style="background: var(--accent); color: white; border-radius: 30px; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(144,10,10,0.4);">Get Started</a>
+                    <a href="#about" class="btn fw-bold px-4 py-2" style="background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; font-size: 1.1rem;">Learn More</a>
+                </div>
+            </div>
+            
+            <!-- Graphic -->
+            <div class="col-lg-6 fade-in-up delay-1 text-center">
+                <div class="glass-panel p-2" style="border-radius: 24px; position: relative; overflow: hidden;">
+                    <!-- Subtle glow effect behind image -->
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; height: 80%; background: radial-gradient(circle, rgba(144,10,10,0.4) 0%, transparent 70%); filter: blur(40px); z-index: 0;"></div>
+                    <img src="/static/hero_graphic.png" alt="FinTrack Dashboard Visualization" class="img-fluid" style="border-radius: 18px; position: relative; z-index: 1;">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-5 mt-5">
+    <div class="container text-center mb-5 fade-in-up delay-2">
+        <h2 class="fw-bold" style="font-family: 'Syne', sans-serif; font-size: 2.5rem;">Powerful Features.</h2>
+        <p class="text-muted mx-auto" style="max-width: 500px;">Everything you need to master your personal finances in one seamless, glassmorphic interface.</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Feature 1 -->
+        <div class="col-md-4 fade-in-up delay-1">
+            <div class="glass-panel feature-card p-4 h-100 d-flex flex-column text-center">
+                <div class="mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: rgba(144,10,10,0.1); border-radius: 50%; color: var(--accent);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-wallet2" viewBox="0 0 16 16">
+                      <path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499L12.136.326zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484L5.562 3zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-13z"/>
+                    </svg>
+                </div>
+                <h4 class="fw-bold mb-3">Expense Tracking</h4>
+                <p class="text-muted" style="font-size: 0.95rem;">Log your daily income and expenses instantly. Categorize transactions to see exactly where your money goes.</p>
+            </div>
+        </div>
+        
+        <!-- Feature 2 -->
+        <div class="col-md-4 fade-in-up delay-2">
+            <div class="glass-panel feature-card p-4 h-100 d-flex flex-column text-center">
+                <div class="mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: rgba(144,10,10,0.1); border-radius: 50%; color: var(--accent);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-pie-chart" viewBox="0 0 16 16">
+                      <path d="M7.5 1.018a7 7 0 0 0-4.79 11.566L7.5 7.793V1.018zm1 0V7.5h6.482A7.001 7.001 0 0 0 8.5 1.018zM14.982 8.5H8.207l-4.79 4.79A7 7 0 0 0 14.982 8.5zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"/>
+                    </svg>
+                </div>
+                <h4 class="fw-bold mb-3">Dynamic Budgets</h4>
+                <p class="text-muted mt-3">Set monthly budgets by category. Our system automatically tracks your progress and visually highlights when you've exceeded your limit.</p>
+            </div>
+        </div>
+        
+        <!-- Feature 3 -->
+        <div class="col-md-4 fade-in-up delay-3">
+            <div class="glass-panel feature-card p-4 h-100 d-flex flex-column text-center">
+                <div class="mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: rgba(144,10,10,0.1); border-radius: 50%; color: var(--accent);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-shield-lock" viewBox="0 0 16 16">
+                      <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z"/>
+                      <path d="M9.5 6.5a1.5 1.5 0 0 1-1 1.415l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99a1.5 1.5 0 1 1 2-1.415z"/>
+                    </svg>
+                </div>
+                <h4 class="fw-bold mb-3">Secure & Private</h4>
+                <p class="text-muted" style="font-size: 0.95rem;">Built with industry-standard security. Your financial data is privately stored in a robust SQLite database.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-5 mt-5">
+    <div class="container fade-in-up delay-1">
+        <div class="glass-panel p-5" style="border-radius: var(--radius); background: linear-gradient(135deg, rgba(144,10,10,0.05), rgba(17,5,5,0.6));">
+            <h2 class="fw-bold mb-4 text-center" style="font-family: 'Syne', sans-serif; font-size: 2.5rem;">About FinTrack.</h2>
+            <div class="row align-items-center mt-5">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <div style="position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(144,10,10,0.3);">
+                        <img src="/static/logo.jpg" alt="About FinTrack" class="img-fluid" style="width: 100%; height: auto; object-fit: cover; opacity: 0.8;">
+                    </div>
+                </div>
+                <div class="col-md-6 px-lg-5">
+                    <h4 class="fw-bold mb-3" style="color: var(--accent);">Built to Learn, Designed to Scale</h4>
+                    <p class="text-muted mb-4" style="line-height: 1.8;">
+                        FinTrack is a full-stack web application designed to help users take back control of their finances. Originally built as a final project for Harvard's CS50x course, it has evolved into a fully functional expense and budget tracker featuring a premium, Apple-style glassmorphic interface.
+                    </p>
+                    <p class="text-muted" style="line-height: 1.8;">
+                        Under the hood, it uses Python, Flask, and an SQLite database to ensure your data is processed efficiently and stored securely. Experience real-time validations, dynamic monthly budgeting, and seamless history tracking—all wrapped in a beautifully responsive design.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 my-5 text-center fade-in-up delay-3">
+    <div class="glass-panel p-5 mx-auto" style="max-width: 800px; background: linear-gradient(135deg, rgba(17,5,5,0.8), rgba(144,10,10,0.15)); border: 1px solid rgba(144,10,10,0.3);">
+        <h2 class="fw-bold mb-4" style="font-family: 'Syne', sans-serif;">Ready to take control?</h2>
+        <p class="text-muted mb-4 mx-auto" style="max-width: 500px;">Join today to stop wondering where your money went, and start directing where it goes.</p>
+        <a href="/register" class="btn px-5 py-3 fw-bold text-uppercase" style="background: var(--accent); color: white; border-radius: 30px; letter-spacing: 1px; box-shadow: 0 4px 20px rgba(144,10,10,0.5);">Create Free Account</a>
+    </div>
+</section>
+{% endblock %}

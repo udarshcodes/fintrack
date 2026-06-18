@@ -1,6 +1,6 @@
 import os
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, jsonify
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required, currency, parse_date
@@ -30,6 +30,13 @@ def after_request(response):
 
 
 @app.route("/")
+def landing():
+    """Show the public landing page"""
+    if session.get("user_id"):
+        return redirect("/dashboard")
+    return render_template("landing.html")
+
+@app.route("/dashboard")
 @login_required
 def index():
     """Show user's financial summary and recent transactions"""
@@ -38,7 +45,11 @@ def index():
     current_month = now.month
     current_year = now.year
 
-    currency_symbol = db.execute("SELECT currency FROM users WHERE id = ?", user_id)[0]["currency"]
+    user_records = db.execute("SELECT currency FROM users WHERE id = ?", user_id)
+    if not user_records:
+        session.clear()
+        return redirect("/login")
+    currency_symbol = user_records[0]["currency"]
     session["currency"] = currency_symbol
 
     incomes_row = db.execute("SELECT SUM(amount) AS total FROM transactions WHERE user_id = ? AND type = 'income'", user_id)
@@ -89,6 +100,9 @@ def add():
 
         if not amount_str or not category or not transaction_type:
             return apology("missing required fields", 400)
+            
+        if transaction_type not in ["income", "expense"]:
+            return apology("invalid transaction type", 400)
 
         try:
             amount = float(amount_str)
@@ -96,10 +110,17 @@ def add():
                 return apology("amount must be positive", 400)
         except ValueError:
             return apology("invalid amount", 400)
+            
+        if date:
+            if not parse_date(date):
+                return apology("invalid date format", 400)
+            final_date = date
+        else:
+            final_date = datetime.now().strftime("%Y-%m-%d")
 
         db.execute(
             "INSERT INTO transactions (user_id, amount, category, description, type, date) VALUES (?, ?, ?, ?, ?, ?)",
-            session["user_id"], amount, category, description, transaction_type, date or datetime.now().strftime("%Y-%m-%d")
+            session["user_id"], amount, category, description, transaction_type, final_date
         )
 
         flash("Transaction added!")
@@ -204,6 +225,8 @@ def register():
             return apology("must provide username", 400)
         elif not password:
             return apology("must provide password", 400)
+        elif len(password) < 6:
+            return apology("password must be at least 6 characters", 400)
         elif password != confirmation:
             return apology("passwords do not match", 400)
 
@@ -224,6 +247,15 @@ def register():
     else:
         return render_template("register.html")
 
+
+@app.route("/check_username")
+def check_username():
+    """Check if a username is already taken via AJAX"""
+    username = request.args.get("username")
+    if not username:
+        return jsonify({"available": False})
+    rows = db.execute("SELECT id FROM users WHERE username = ?", username)
+    return jsonify({"available": len(rows) == 0})
 
 @app.route("/budget", methods=["GET", "POST"])
 @login_required
@@ -251,6 +283,12 @@ def budget():
                 return redirect("/budget")
             month = int(month_str)
             year = int(year_str)
+            if not (1 <= month <= 12):
+                flash("Invalid month.", "danger")
+                return redirect("/budget")
+            if year < 2000 or year > 2100:
+                flash("Invalid year.", "danger")
+                return redirect("/budget")
         except (ValueError, TypeError):
             flash("Invalid amount, month, or year format.", "danger")
             return redirect("/budget")
@@ -284,7 +322,12 @@ def budget():
         )
         categories = db.execute(
             "SELECT category FROM transactions WHERE user_id = ? GROUP BY category", user_id)
-        user_currency = db.execute("SELECT currency FROM users WHERE id = ?", user_id)[0]["currency"]
+            
+        user_records = db.execute("SELECT currency FROM users WHERE id = ?", user_id)
+        if not user_records:
+            session.clear()
+            return redirect("/login")
+        user_currency = user_records[0]["currency"]
 
         return render_template(
             "budget.html",
@@ -404,11 +447,14 @@ def delete_budget():
         flash("Invalid month or year provided for deletion.", "danger")
         return redirect("/budget")
 
-    db.execute(
+    rows_affected = db.execute(
         "DELETE FROM budgets WHERE user_id = ? AND category = ? AND month = ? AND year = ?",
         user_id, category, month, year
     )
-    flash("Budget deleted successfully!", "info")
+    if rows_affected > 0:
+        flash("Budget deleted successfully!", "info")
+    else:
+        flash("Could not delete budget. It might not exist.", "danger")
     return redirect("/budget")
 
 

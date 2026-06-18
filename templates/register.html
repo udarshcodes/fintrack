@@ -3,23 +3,74 @@
 {% block title %}Register{% endblock %}
 
 {% block main %}
-    <h2 class="mb-4">Register</h2>
-    <form action="/register" method="post" class="mx-auto" style="max-width: 400px;">
-        <div class="mb-3">
-            <label for="username" class="form-label visually-hidden">Username</label>
-            <input autocomplete="username" autofocus required class="form-control" id="username" name="username" placeholder="Username" type="text">
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label visually-hidden">Password</label>
-            <input autocomplete="new-password" required class="form-control" id="password" name="password" placeholder="Password" type="password">
-        </div>
-        <div class="mb-3">
-            <label for="confirmation" class="form-label visually-hidden">Confirm Password</label>
-            <input autocomplete="new-password" required class="form-control" id="confirmation" name="confirmation" placeholder="Confirm Password" type="password">
-        </div>
-        <button class="btn btn-primary w-100" type="submit">Register</button>
-    </form>
-    <div class="text-center mt-3">
-        <p>Already have an account? <a href="/login">Log in here</a></p>
+<div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 70vh;">
+    <!-- Logo -->
+    <div class="mb-3 text-center">
+        <img src="/static/logo.jpg" alt="Logo" width="80" height="80" style="border-radius: 16px;">
     </div>
+    <h1 class="mb-4 text-center fw-bold" style="font-family: 'Syne', sans-serif;">FinTrack</h1>
+    
+    <p class="text-uppercase fw-bold mb-4" style="letter-spacing: 1px; font-size: 0.85rem; color: #fff;">User Portal</p>
+
+    <!-- Portal Box -->
+    <div class="p-4" style="background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 420px; box-shadow: var(--shadow);">
+        
+        <!-- Tabs -->
+        <div class="d-flex justify-content-between mb-4" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;">
+            <a href="/register" class="text-decoration-none text-center flex-grow-1" style="color: #fff; font-weight: 600; background: rgba(144, 10, 10, 0.4); padding: 5px 0; border-radius: 6px;">Register</a>
+            <a href="/login" class="text-decoration-none text-center flex-grow-1" style="color: var(--text-muted); font-weight: 600;">Password Login</a>
+        </div>
+
+        <form action="/register" method="post">
+            <div class="mb-3 text-start">
+                <label for="username" class="form-label" style="font-size: 0.85rem; color: #ccc;">Username</label>
+                <input autocomplete="username" autofocus required class="form-control" id="username" name="username" placeholder="Choose a username" type="text">
+                <small id="username-feedback" class="form-text mt-1 d-block" style="min-height: 18px; font-weight: 500;"></small>
+            </div>
+            <div class="mb-3 text-start">
+                <label for="password" class="form-label" style="font-size: 0.85rem; color: #ccc;">Password</label>
+                <input autocomplete="new-password" required class="form-control" id="password" name="password" placeholder="••••••••" type="password">
+            </div>
+            <div class="mb-4 text-start">
+                <label for="confirmation" class="form-label" style="font-size: 0.85rem; color: #ccc;">Confirm Password</label>
+                <input autocomplete="new-password" required class="form-control" id="confirmation" name="confirmation" placeholder="••••••••" type="password">
+            </div>
+            <button class="btn w-100 fw-bold" type="submit" style="background: var(--accent); color: white; padding: 10px; border-radius: 20px;">Create new account (Sign Up)</button>
+        </form>
+
+        <div class="text-center mt-4">
+            <a href="/" class="btn w-100" style="border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 20px; font-weight: 600;">Back to Landing Page</a>
+        </div>
+    </div>
+</div>
+<script>
+    let timeout = null;
+    document.getElementById('username').addEventListener('input', function(e) {
+        clearTimeout(timeout);
+        const username = e.target.value.trim();
+        const feedback = document.getElementById('username-feedback');
+        
+        if (username.length === 0) {
+            feedback.textContent = '';
+            return;
+        }
+        
+        timeout = setTimeout(async () => {
+            try {
+                const response = await fetch(`/check_username?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
+                
+                if (data.available) {
+                    feedback.textContent = 'Username is available!';
+                    feedback.style.color = 'var(--success)';
+                } else {
+                    feedback.textContent = 'Username is already taken.';
+                    feedback.style.color = 'var(--danger)';
+                }
+            } catch (err) {
+                console.error("Error checking username:", err);
+            }
+        }, 400);
+    });
+</script>
 {% endblock %}
