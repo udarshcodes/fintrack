@@ -39,8 +39,8 @@ FinTrack uses a monolithic Model-View-Controller (MVC) architecture. All web req
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/udarshcodes/pft.git
-cd pft
+git clone https://github.com/udarshcodes/fintrack.git
+cd fintrack
 ```
 
 2. **Install dependencies**
@@ -62,14 +62,16 @@ Visit `http://127.0.0.1:5000` in your web browser.
 ## Project Structure
 
 ```text
-pft/
+fintrack/
 ├── app.py              # Main Flask application and route definitions
 ├── create_db.py        # Database initialization script
 ├── finance.db          # SQLite database (created after running create_db.py)
 ├── helpers.py          # Utility functions for auth, currency formatting, and date parsing
 ├── Procfile            # Gunicorn command for deployment
 ├── requirements.txt    # Python package dependencies
-├── schema.sql          # Database table definitions
+├── runtime.txt         # Python runtime version for deployment
+├── schema.sql          # SQLite Database table definitions
+├── schema_postgres.sql # PostgreSQL Database table definitions
 ├── static/             
 │   ├── hero_graphic.png # Landing page visualization
 │   ├── logo.jpg        # App logo
@@ -93,8 +95,30 @@ pft/
 
 - **Session-Based Authentication:** Chose server-side sessions over JWTs because the application relies entirely on server-rendered HTML templates rather than a separated API and frontend.
 - **Raw SQL over ORM:** Used raw SQL queries via the `cs50` library instead of SQLAlchemy to solidify my understanding of relational database concepts and schema design.
-- **SQLite Database:** Selected SQLite because the application is designed for individual use and does not require complex concurrent write operations.
+- **SQLite vs PostgreSQL:** Adapted the application to support both local SQLite and production PostgreSQL environments, making it fully deployment-ready.
 - **Backend Data Validation:** Learned the importance of validating user input on the server side (e.g., verifying dates and transaction types) to prevent database corruption, even when HTML forms have built-in validations.
 
+## Deploying to Render
+
+To deploy this application to Render so that your data is persistent (using PostgreSQL), follow these exact steps:
+
+1. **Create a PostgreSQL Database on Render**
+   - Go to your Render Dashboard and create a new **PostgreSQL** database (the Free tier works!).
+   - Once created, copy the **Internal Database URL** (if deploying on Render) or **External Database URL**.
+
+2. **Create a Web Service**
+   - In Render, create a new **Web Service** and connect your GitHub repository.
+   - Set the following configurations:
+     - **Build Command:** `pip install -r requirements.txt && python create_db.py`
+     - **Start Command:** `gunicorn app:app`
+
+3. **Set Environment Variables**
+   - Under the "Environment" tab of your Web Service, add the following variables:
+     - `DATABASE_URL`: Paste the PostgreSQL URL you copied earlier.
+     - `SECRET_KEY`: Set this to a long, random string (e.g., generated via a password manager).
+     - `PYTHON_VERSION`: `3.11.0` (Matches the runtime.txt).
+
+4. **Deploy!**
+   - Click **Save Changes** and Render will automatically build and deploy your application. Your database will be automatically initialized using `schema_postgres.sql` and your data will be permanently saved.
 
 *CS50x Final Project — Harvard University*

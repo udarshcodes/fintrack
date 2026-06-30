@@ -4,3 +4,4 @@ cs50
 Werkzeug
 gunicorn
 SQLAlchemy
+psycopg2-binary

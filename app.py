@@ -15,9 +15,10 @@ app.jinja_env.filters["currency"] = currency
 
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
-
-db = SQL("sqlite:///finance.db")
+uri = os.getenv("DATABASE_URL")
+if uri and uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+db = SQL(uri if uri else "sqlite:///finance.db")
 
 
 @app.after_request
@@ -71,9 +72,18 @@ def index():
     budget_data = []
     for budget in budgets:
 
+        first_day = f"{current_year}-{current_month:02d}-01"
+        if current_month == 12:
+            next_month = 1
+            next_year = current_year + 1
+        else:
+            next_month = current_month + 1
+            next_year = current_year
+        next_month_first_day = f"{next_year}-{next_month:02d}-01"
+
         spent_row = db.execute(
-            "SELECT SUM(amount) AS total FROM transactions WHERE user_id = ? AND category = ? AND type = 'expense' AND strftime('%m', date) = ? AND strftime('%Y', date) = ?",
-            user_id, budget["category"], f"{current_month:02d}", str(current_year)
+            "SELECT SUM(amount) AS total FROM transactions WHERE user_id = ? AND category = ? AND type = 'expense' AND date >= ? AND date < ?",
+            user_id, budget["category"], first_day, next_month_first_day
         )
         spent = spent_row[0]["total"] if spent_row and spent_row[0]["total"] is not None else 0
 
@@ -348,26 +358,40 @@ def reports():
     current_month = now.month
     current_year = now.year
 
-    monthly_data = db.execute(
-        """SELECT strftime('%Y-%m', date) AS month,
-                  SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS income,
-                  SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS expense
-           FROM transactions
-           WHERE user_id = ?
-           GROUP BY strftime('%Y-%m', date)
-           ORDER BY month DESC
-           LIMIT 12""",
-        user_id
-    )
+    # Fetch all transactions to group in Python for database agnosticism
+    transactions = db.execute("SELECT date, type, amount FROM transactions WHERE user_id = ?", user_id)
+    
+    monthly_dict = {}
+    for t in transactions:
+        month = str(t["date"])[:7]
+        if month not in monthly_dict:
+            monthly_dict[month] = {"month": month, "income": 0, "expense": 0}
+        if t["type"] == "income":
+            monthly_dict[month]["income"] += t["amount"]
+        elif t["type"] == "expense":
+            monthly_dict[month]["expense"] += t["amount"]
+            
+    monthly_data = list(monthly_dict.values())
+    monthly_data.sort(key=lambda x: x["month"], reverse=True)
+    monthly_data = monthly_data[:12]
+
+    first_day = f"{current_year}-{current_month:02d}-01"
+    if current_month == 12:
+        next_month = 1
+        next_year = current_year + 1
+    else:
+        next_month = current_month + 1
+        next_year = current_year
+    next_month_first_day = f"{next_year}-{next_month:02d}-01"
 
     category_data = db.execute(
         """SELECT category, SUM(amount) AS total
            FROM transactions
            WHERE user_id = ? AND type = 'expense'
-                 AND strftime('%m', date) = ? AND strftime('%Y', date) = ?
+                 AND date >= ? AND date < ?
            GROUP BY category
            ORDER BY total DESC""",
-        user_id, f"{current_month:02d}", str(current_year)
+        user_id, first_day, next_month_first_day
     )
 
     return render_template(
