@@ -4,7 +4,7 @@
   <p><em>A full stack expense and budget tracker built to learn the fundamentals.</em></p>
 </div>
 
-**Live Demo:** [fintrack-iudq.onrender.com](https://fintrack-iudq.onrender.com) (Hosted on Render's free tier, so it may take a few seconds to spin up on initial load.)
+**Live Demo:** [fintrack-e9zt.onrender.com](https://fintrack-e9zt.onrender.com) (Hosted on Render's free tier, so it may take a few seconds to spin up on initial load.)
 
 ## About
 
