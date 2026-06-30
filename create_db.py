@@ -3,9 +3,13 @@ from cs50 import SQL
 
 uri = os.getenv("DATABASE_URL")
 is_postgres = False
-if uri and uri.startswith("postgres://"):
-    uri = uri.replace("postgres://", "postgresql://", 1)
-    is_postgres = True
+
+if uri:
+    if uri.startswith("postgres://"):
+        uri = uri.replace("postgres://", "postgresql://", 1)
+        is_postgres = True
+    elif uri.startswith("postgresql://"):
+        is_postgres = True
 
 db = SQL(uri if uri else "sqlite:///finance.db")
 
